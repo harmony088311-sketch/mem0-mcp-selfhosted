@@ -294,6 +294,36 @@ class TestBuildConfig:
         assert "ollama" in provider_names
         assert "anthropic" in provider_names
 
+    # --- gemini_split contradiction provider registration (8.5.x) ---
+
+    def test_providers_info_gemini_split_registers_anthropic(self):
+        """providers_info includes Anthropic when gemini_split uses default anthropic contradiction."""
+        env = {
+            "MEM0_LLM_PROVIDER": "ollama",
+            "MEM0_ENABLE_GRAPH": "true",
+            "MEM0_GRAPH_LLM_PROVIDER": "gemini_split",
+            "GOOGLE_API_KEY": "test-gemini-key",
+        }
+        _, providers_info, _ = self._build_with_env(env)
+        provider_names = [pi["name"] for pi in providers_info]
+        assert "anthropic" in provider_names
+        anthropic_pi = next(pi for pi in providers_info if pi["name"] == "anthropic")
+        assert "AnthropicOATLLM" in anthropic_pi["class_path"]
+
+    def test_providers_info_gemini_split_ollama_contradiction_no_anthropic(self):
+        """providers_info excludes Anthropic when gemini_split uses ollama contradiction."""
+        env = {
+            "MEM0_LLM_PROVIDER": "ollama",
+            "MEM0_ENABLE_GRAPH": "true",
+            "MEM0_GRAPH_LLM_PROVIDER": "gemini_split",
+            "MEM0_GRAPH_CONTRADICTION_LLM_PROVIDER": "ollama",
+            "GOOGLE_API_KEY": "test-gemini-key",
+        }
+        _, providers_info, _ = self._build_with_env(env)
+        provider_names = [pi["name"] for pi in providers_info]
+        assert "ollama" in provider_names
+        assert "anthropic" not in provider_names
+
     # --- URL decoupling: graph LLM (9.x) ---
 
     def test_graph_llm_url_from_dedicated_env(self):

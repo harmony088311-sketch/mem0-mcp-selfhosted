@@ -203,10 +203,15 @@ def build_config() -> tuple[dict[str, Any], list[ProviderInfo], dict[str, Any] |
             "class_path": "mem0_mcp_selfhosted.llm_ollama.OllamaToolLLM",
         },
     ]
-    # Register Anthropic when used as main LLM or as graph LLM
+    # Register Anthropic when used as main LLM, graph LLM, or contradiction LLM
+    contradiction_provider = os.environ.get(
+        "MEM0_GRAPH_CONTRADICTION_LLM_PROVIDER", "anthropic"
+    )
     _needs_anthropic = (
         llm_provider == "anthropic"
         or (enable_graph and graph_llm_provider_raw in ("anthropic", "anthropic_oat"))
+        or (enable_graph and graph_llm_provider_raw == "gemini_split"
+            and contradiction_provider in ("anthropic", "anthropic_oat"))
     )
     if _needs_anthropic:
         providers_info.append({
