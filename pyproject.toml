@@ -42,7 +42,7 @@ version_toml = ["pyproject.toml:project.version"]
 version_variables = ["src/mem0_mcp_selfhosted/__init__.py:__version__"]
 branches.main = { match = "main", prerelease = false }
 tag_format = "v{version}"
-commit_parser = "conventional"
+commit_parser = "angular"
 commit_message = "chore(release): v{version} [skip ci]"
 upload_to_pypi = false
 upload_to_repository = false
@@ -56,13 +56,11 @@ allowed_tags = [
 ]
 
 [tool.semantic_release.changelog]
+changelog_file = "CHANGELOG.md"
 exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^Merge ",
 ]
-
-[tool.semantic_release.changelog.default_templates]
-changelog_file = "CHANGELOG.md"
 
 [tool.semantic_release.publish]
 upload_to_vcs_release = true
