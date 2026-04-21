@@ -69,6 +69,9 @@ def build_config() -> tuple[dict[str, Any], list[ProviderInfo], dict[str, Any] |
         llm_config["max_tokens"] = llm_max_tokens
         if token:
             llm_config["api_key"] = token
+        anthropic_base_url = opt_env("ANTHROPIC_BASE_URL")
+        if anthropic_base_url:
+            llm_config["anthropic_base_url"] = anthropic_base_url
     elif llm_provider == "ollama":
         llm_config["ollama_base_url"] = _resolve_ollama_url("MEM0_LLM_URL")
 
